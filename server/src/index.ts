@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
+import { userRoutes } from "./routes/user.Routes";
 
 // app & port
 const app: Application = express();
@@ -13,9 +14,7 @@ app.use(cookieParser());
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 
 // apis
-app.get("/", (req: Request, res: Response) => {
-  res.status(201).send({ message: "Hello from express" });
-});
+app.use("/api/users",userRoutes)
 
 // server
 app.listen(PORT, () =>
