@@ -16,7 +16,7 @@ export const registerSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Please type your password" })
-    .min(5, { message: "Password must be at least 5 Characters" })
+    .min(6, { message: "Password must be at least 6 Characters" })
     .max(60, { message: "Password must be under 60 Characters" }),
 });
 
@@ -32,6 +32,6 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Please type your password" })
-    .min(5, { message: "Password must be at least 5 Characters" })
+    .min(6, { message: "Password must be at least 6 Characters" })
     .max(60, { message: "Password must be under 60 Characters" }),
 });

@@ -1,15 +1,26 @@
 // routes
 
 import { Router } from "express";
-import { login, register } from "../controllers/user.Controller";
+import {
+  login,
+  logout,
+  register,
+  userSession,
+} from "../controllers/user.Controller";
+import { isValidated } from "../middlewares/auth";
 
-const router = Router()
+const router = Router();
 
 // register
-router.post("/register",register)
+router.post("/register", register);
 
 // login
-router.post("/login",login)
+router.post("/login", login);
 
+// session
+router.get("/session", isValidated, userSession);
 
-export {router as userRoutes}
+// logout
+router.post("/logout", logout);
+
+export { router as userRoutes };
