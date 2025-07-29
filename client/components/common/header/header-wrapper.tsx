@@ -1,11 +1,10 @@
-"use client"
+"use client";
 import React from "react";
 import Header from "./header";
+import { useUserStore } from "@/zustand/user.store";
 
 export default function HeaderWrapper() {
-  return (
-    <>
-      <Header />
-    </>
-  );
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
+  return <>{isAuthenticated && <Header />}</>;
 }

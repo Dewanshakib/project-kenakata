@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/auth/auth-provider";
 import HeaderWrapper from "@/components/common/header/header-wrapper";
+import { Toaster } from "react-hot-toast";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -25,11 +26,13 @@ export default function RootLayout({
       <body className={`${openSans.className} antialiased`}>
         <AuthProvider>
           <>
-          
-          <HeaderWrapper />
+            <HeaderWrapper />
           </>
 
-          <main className="max-w-7xl mx-auto px-6 lg:px-10 mt-4">{children}</main>
+          <main className="max-w-7xl mx-auto px-6 lg:px-10 mt-4">
+            {children}
+            <Toaster />
+          </main>
           <footer></footer>
         </AuthProvider>
       </body>
