@@ -1,5 +1,14 @@
 "use client";
-import { MenuIcon, ShoppingBasket, X } from "lucide-react";
+import {
+  AlignRight,
+  LogIn,
+  LogOut,
+  MenuIcon,
+  ShieldUser,
+  ShoppingBasket,
+  User,
+  X,
+} from "lucide-react";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -38,13 +47,13 @@ export default function Menu() {
   ];
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden p-1">
       {/* menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="hover:bg-gray-100/80 cursor-pointer hover:transition-all hover:duration-200 p-1.5 rounded-md"
       >
-        <MenuIcon size={30} />
+        <AlignRight size={30} />
       </button>
       {/* menu button */}
 
@@ -63,7 +72,7 @@ export default function Menu() {
               exit={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="bg-white w-screen sm:w-[70%] h-screen"
+              className="bg-white w-screen sm:w-[70%] h-screen p-2"
             >
               <div className="p-4">
                 {/* header starts */}
@@ -96,7 +105,7 @@ export default function Menu() {
                 {/* header ends */}
 
                 {/* content starts */}
-                <div className="flex flex-col gap-y-4 ml-1.5 mt-12">
+                <div className="flex flex-col gap-y-4  mt-12">
                   <h1 className="text-2xl font-bold border-b border-b-gray-300 mb-1">
                     Links
                   </h1>
@@ -113,7 +122,7 @@ export default function Menu() {
                 </div>
 
                 {/* cart btn starts */}
-                <div className="ml-1.5">
+                <div >
                   <h1 className="text-2xl font-bold border-b border-b-gray-300 mb-2 mt-5">
                     Cart
                   </h1>
@@ -129,19 +138,46 @@ export default function Menu() {
                 {/* cart btn ends*/}
 
                 {/* user content starts */}
-                <div className="ml-1.5">
+                <div >
                   <h1 className="text-2xl font-bold border-b border-b-gray-300 mb-1 mt-4">
                     Profile
                   </h1>
                   <div className="mt-2 mb-2">
                     <div className="flex flex-col gap-y-4">
-                      <Link href={"/login"}>Login</Link>
-                      <Link href={"/profile"}>Dashboard</Link>
-                      <Link href={"/dashboard"}>Profile</Link>
+                      <Link
+                        href={"/login"}
+                        className="bg-gray-900 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium"
+                      >
+                        <span className="inline-flex items-center justify-center w-full gap-4">
+                          <LogIn />
+                          Login
+                        </span>
+                      </Link>
+                      <Link
+                        className="py-1.5 grid place-items-center font-medium rounded-md text-center w-full bg-gray-200 border border-gray-300"
+                        href={"/profile"}
+                      >
+                        <span className="inline-flex items-center justify-center w-full gap-4">
+                          <ShieldUser />
+                          Admin
+                        </span>
+                      </Link>
+                      <Link
+                        className="py-1.5 grid place-items-center rounded-md font-medium text-center w-full bg-gray-200 border border-gray-300"
+                        href={"/dashboard"}
+                      >
+                        <span className="inline-flex items-center justify-center w-full gap-4">
+                          <User />
+                          Profile
+                        </span>
+                      </Link>
                     </div>
 
-                    <button className="bg-gray-900 text-white p-1.5 rounded-md font-medium">
-                      Logout
+                    <button className="bg-gray-900 mt-3 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium">
+                      <span className="inline-flex items-center justify-center w-full gap-4">
+                        <LogOut />
+                        Logout
+                      </span>
                     </button>
                   </div>
                 </div>

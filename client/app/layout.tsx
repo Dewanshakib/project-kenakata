@@ -24,10 +24,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${openSans.className} antialiased`}>
         <AuthProvider>
-          <header>
-            <HeaderWrapper/>
-          </header>
-          <main>{children}</main>
+          <>
+          
+          <HeaderWrapper />
+          </>
+
+          <main className="max-w-7xl mx-auto px-6 lg:px-10 mt-4">{children}</main>
           <footer></footer>
         </AuthProvider>
       </body>

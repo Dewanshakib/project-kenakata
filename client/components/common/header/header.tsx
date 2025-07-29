@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import logo from "@/assets/images/kk_logo.png";
 import Menu from "./menu";
+import { ShieldUser, ShoppingBasket, User } from "lucide-react";
 
 export default function Header() {
   // navlinks
@@ -34,8 +35,8 @@ export default function Header() {
   ];
 
   return (
-    <div className="sticky top-0 w-full px-8 2xl:px-14">
-      <div className="flex justify-between items-center py-2 2xl:py-4">
+    <div className="sticky top-0 w-full z-50 px-6 lg:px-8 2xl:px-14 backdrop-blur-sm bg-white/10 border-b border-b-gray-300">
+      <div className="flex justify-between items-center py-2 2xl:py-4 ">
         {/* logo starts */}
         <div className="">
           <Link href={"/"}>
@@ -53,11 +54,11 @@ export default function Header() {
         {/* logo ends */}
 
         {/* navlinks & auth section starts -> Desktop*/}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-2">
           <div className="flex items-center gap-x-5">
             {navlinks.map((navlink) => (
               <Link
-                className="font-medium hover:text-orange-500 duration-200"
+                className="font-semibold hover:text-orange-500 duration-200"
                 key={navlink.src}
                 href={navlink.src}
               >
@@ -65,11 +66,40 @@ export default function Header() {
               </Link>
             ))}
           </div>
+          <div className="ml-5 flex items-center gap-2 relative">
+            <Link
+              href={"/login"}
+              className="px-4 rounded-md font-medium cursor-pointer py-2 bg-gray-700 text-white hover:duration-300 hover:opacity-90"
+            >
+              <span className="flex gap-2">
+                <ShieldUser />
+                <p>Admin</p>
+              </span>
+            </Link>
+            <Link
+              href={"/profile"}
+              className="px-4 rounded-md font-medium cursor-pointer py-2 border border-gray-300 hover:duration-300 hover:opacity-90"
+            >
+              <span className="flex gap-2">
+                <User />
+                <p>Profile</p>
+              </span>
+            </Link>
+            <Link
+              href={"/cart"}
+              className="p-2 rounded-md font-medium cursor-pointer hover:duration-300 hover:opacity-90"
+            >
+              <span className="absolute top-0 right-1.5 rounded-full text-xs font-medium">
+               0
+              </span>
+              <ShoppingBasket size={34} />
+            </Link>
+          </div>
         </div>
         {/* navlinks & auth section ends -> Desktop*/}
 
         {/* mobile menu starts*/}
-            <Menu/>
+        <Menu />
         {/* mobile menu ends*/}
       </div>
     </div>
