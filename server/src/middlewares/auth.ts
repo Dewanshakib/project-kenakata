@@ -15,7 +15,8 @@ export const isValidated = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.secret;
+    const token = req.cookies?.secret;
+    // console.log(token)
     if (!token) {
       return res.status(400).send({ message: "Invalid token" });
     }

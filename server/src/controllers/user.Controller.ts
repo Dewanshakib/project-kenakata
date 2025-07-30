@@ -1,9 +1,11 @@
 // controllers
 import { Request, Response } from "express";
-import { loginSchema, registerSchema } from "../libs/schema";
+import { forgetPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from "../libs/schema";
 import { prisma } from "../libs/prisma";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
+import crypto from "crypto"
+import { sendEmail } from "../services/mail";
 
 declare global {
   namespace Express {
@@ -23,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
     if (!parsed.success) {
       return res
         .status(400)
-        .send({ message: parsed.error.flatten().fieldErrors });
+        .send({ error: parsed.error.flatten().fieldErrors });
     }
 
     const userExists = await prisma.user.findUnique({
@@ -32,7 +34,7 @@ export const register = async (req: Request, res: Response) => {
 
     if (userExists) {
       return res
-        .status(400)
+        .status(401)
         .send({ message: "User already exists. Try with another email" });
     }
 
@@ -66,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
     if (!parsed.success) {
       return res
         .status(400)
-        .send({ message: parsed.error.flatten().fieldErrors });
+        .send({ error: parsed.error.flatten().fieldErrors });
     }
 
     const userExists = await prisma.user.findUnique({
@@ -74,7 +76,7 @@ export const login = async (req: Request, res: Response) => {
     });
 
     if (!userExists) {
-      return res.status(400).send({ message: "User not found" });
+      return res.status(401).send({ message: "User not found" });
     }
 
     const isMatched = await bcrypt.compare(
@@ -82,13 +84,13 @@ export const login = async (req: Request, res: Response) => {
       userExists.password
     );
     if (!isMatched) {
-      return res.status(400).send({ message: "Invalid Credentials" });
+      return res.status(401).send({ message: "Invalid Credentials" });
     }
 
     // token
     const secret = generateToken(userExists.id);
     if (!secret) {
-      return res.status(400).send({ message: "Invalid token" });
+      return res.status(401).send({ message: "Invalid token" });
     }
 
     // cookie
@@ -98,7 +100,7 @@ export const login = async (req: Request, res: Response) => {
       path: "/",
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     return res.status(201).send({ message: `Welcome back ${userExists.name}` });
@@ -141,8 +143,8 @@ export const userSession = async (req: Request, res: Response) => {
 // logout
 export const logout = async (req: Request, res: Response) => {
   try {
-    // clear cookie
-    res.status(200).clearCookie("secret");
+    res.status(200).clearCookie("secret")
+    // res.cookie("secret","")
 
     return res.status(200).send({ message: "User logged out successfully" });
   } catch (error) {
@@ -152,3 +154,86 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(500).send({ message: "Server error" });
   }
 };
+
+// forget password
+export const forgetPassword = async (req: Request, res: Response) => {
+  try {
+    const body = req.body
+
+    const parsed = forgetPasswordSchema.safeParse(body)
+    if (!parsed.success) {
+      return res.status(400).send({ error: parsed.error.flatten().fieldErrors })
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: parsed.data.email } })
+    if (!user) {
+      return res.status(401).send({ message: "No user found with this email" })
+    }
+
+    // create token & expiry
+    const resetPasswordToken = crypto.randomBytes(32).toString("hex")
+    const resetTokenExpiry = (new Date(Date.now() + (15 * 60 * 1000))) // 15min 
+
+    // send mail with token
+    await sendEmail(user.email, resetPasswordToken)
+
+    // update db
+    await prisma.user.update({
+      where: { email: user.email }, data: {
+        resetPasswordToken: resetPasswordToken,
+        resetPasswordExpiry: resetTokenExpiry
+      }
+    })
+
+    return res.status(201).send({ message: "Please check your email" })
+
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).send({ message: error.message });
+    }
+    return res.status(500).send({ message: "Server error" });
+  }
+}
+
+// reset password
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const body = req.body
+
+    const parsed = resetPasswordSchema.safeParse(body)
+    if (!parsed.success) {
+      return res.status(400).send({ error: parsed.error.flatten().fieldErrors })
+    }
+
+    // check token valid or not
+    const userWithToken = await prisma.user.findFirst({
+      where:
+      {
+        resetPasswordToken: parsed.data.token,
+        resetPasswordExpiry: { gt: new Date() }
+      }
+    })
+    if (!userWithToken) {
+      return res.status(401).send({ message: "Token expired or invalid." })
+    }
+
+    // new hashed password
+    const newHashPassword = await bcrypt.hash(parsed.data.password, 10)
+
+    // update db
+    await prisma.user.update({
+      where: { id: userWithToken.id }, data: {
+        resetPasswordExpiry: null,
+        resetPasswordToken: null,
+        password: newHashPassword
+      }
+    })
+
+    return res.status(201).send({ message: "Password changed successfully" })
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).send({ message: error.message });
+    }
+    return res.status(500).send({ message: "Server error" });
+  }
+}

@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isValidated = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const isValidated = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const token = req.cookies.secret;
+        const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.secret;
+        // console.log(token)
         if (!token) {
             return res.status(400).send({ message: "Invalid token" });
         }

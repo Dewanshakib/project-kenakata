@@ -14,4 +14,8 @@ router.post("/login", user_Controller_1.login);
 // session
 router.get("/session", auth_1.isValidated, user_Controller_1.userSession);
 // logout
-router.post("/logout", user_Controller_1.logout);
+router.get("/logout", user_Controller_1.logout);
+// forget password
+router.post("/forget-password", user_Controller_1.forgetPassword);
+// reset password
+router.post("/reset-password", user_Controller_1.resetPassword);

@@ -2,9 +2,11 @@
 
 import { Router } from "express";
 import {
+  forgetPassword,
   login,
   logout,
   register,
+  resetPassword,
   userSession,
 } from "../controllers/user.Controller";
 import { isValidated } from "../middlewares/auth";
@@ -21,6 +23,12 @@ router.post("/login", login);
 router.get("/session", isValidated, userSession);
 
 // logout
-router.post("/logout", logout);
+router.get("/logout", logout);
+
+// forget password
+router.post("/forget-password", forgetPassword)
+
+// reset password
+router.post("/reset-password", resetPassword)
 
 export { router as userRoutes };
