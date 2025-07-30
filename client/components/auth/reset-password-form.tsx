@@ -22,7 +22,7 @@ export default function ResetPasswordForm() {
     setLoading(true);
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/forget-password",
+        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/reset-password",
         {
           method: "POST",
           headers: {
@@ -34,12 +34,18 @@ export default function ResetPasswordForm() {
 
       const data = await res?.json();
       if (res.status === 400) {
-        setErrors(data.message);
+        setErrors(data.error);
+        return;
+      }
+
+      if (res.status === 401) {
+        toast.error(data.message);
+        setErrors(null);
         return;
       }
 
       toast.success(data.message);
-      router.push("/reset-password");
+      router.push("/login");
     } catch (error) {
       console.log(error);
     } finally {
@@ -60,9 +66,7 @@ export default function ResetPasswordForm() {
       </div>
 
       <div className="mb-10">
-        <h1 className="text-2xl font-bold mt-5 text-center">
-          Reset password
-        </h1>
+        <h1 className="text-2xl font-bold mt-5 text-center">Reset password</h1>
       </div>
 
       <div className="">
@@ -77,14 +81,18 @@ export default function ResetPasswordForm() {
                 setFormData({ ...formData, token: e.target.value })
               }
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
-              type="text"
+              type="password"
               placeholder="******************"
             />
-            {errors?.token && (
-              <p className="font-semibold text-sm text-red-500 my-2">
-                • {errors.token}
-              </p>
-            )}
+            {errors?.token &&
+              errors.token.map((error) => (
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
+                  • {error}
+                </p>
+              ))}
           </div>
           <div className="mb-2.5">
             <label htmlFor="Email" className="font-medium">
@@ -96,14 +104,18 @@ export default function ResetPasswordForm() {
                 setFormData({ ...formData, password: e.target.value })
               }
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
-              type="text"
+              type="password"
               placeholder="******************"
             />
-            {errors?.password && (
-              <p className="font-semibold text-sm text-red-500 my-2">
-                • {errors.password}
-              </p>
-            )}
+            {errors?.password &&
+              errors.password.map((error) => (
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
+                  • {error}
+                </p>
+              ))}
           </div>
           <div>
             <button

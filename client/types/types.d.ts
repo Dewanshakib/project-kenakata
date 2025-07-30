@@ -12,7 +12,11 @@ export type IErrors = {
   password: string[];
 };
 
+export type IForgetPwdErros = {
+  email: string[];
+}
+
 export type IResetPwdErrors = {
-  token:string;
-  password:string;
+  token: string[];
+  password: string[];
 }

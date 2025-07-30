@@ -6,10 +6,11 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { IForgetPwdErros } from "@/types/types";
 
 export default function ForgetPasswordForm() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<IForgetPwdErros | null>(null);
   const [email, setEmail] = useState("");
   const router = useRouter();
 
@@ -30,7 +31,13 @@ export default function ForgetPasswordForm() {
 
       const data = await res?.json();
       if (res.status === 400) {
-        setError(data.message);
+        setErrors(data.error);
+        return;
+      }
+
+      if (res.status === 401) {
+        toast.error(data.message);
+        setErrors(null);
         return;
       }
 
@@ -74,14 +81,15 @@ export default function ForgetPasswordForm() {
               type="text"
               placeholder="dewan_op"
             />
-            {error && (
-              <p
-                key={error}
-                className="font-semibold text-sm text-red-500 my-2"
-              >
-                • {error}
-              </p>
-            )}
+            {errors?.email &&
+              errors.email.map((error) => (
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
+                  • {error}
+                </p>
+              ))}
           </div>
           <div>
             <button
