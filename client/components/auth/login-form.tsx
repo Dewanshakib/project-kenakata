@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useUserStore } from "@/zustand/user.store";
 
 export default function LoginForm() {
   const [formData, setFormData] = useState<IUserInput>({
@@ -28,7 +29,7 @@ export default function LoginForm() {
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/login",
         {
           method: "POST",
-          credentials:'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -36,15 +37,25 @@ export default function LoginForm() {
         }
       );
       const data = await res?.json();
+
       if (res.status === 400) {
-        setErrors(data.message);
+        setErrors(data.error);
+        return;
+      }
+
+      if (res.status === 401) {
+        toast.error(data.message);
+        setErrors(null)
         return;
       }
 
       toast.success(data.message);
+      useUserStore.getState().setIsAuthenticated(true);
       setErrors(null);
       router.push("/");
+      // router.refresh();
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -88,7 +99,10 @@ export default function LoginForm() {
             />
             {errors?.username &&
               errors.username.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
                   • {error}
                 </p>
               ))}
@@ -108,7 +122,10 @@ export default function LoginForm() {
             />
             {errors?.email &&
               errors.email.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
                   • {error}
                 </p>
               ))}
@@ -135,10 +152,21 @@ export default function LoginForm() {
             </button>
             {errors?.password &&
               errors.password.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
                   • {error}
                 </p>
               ))}
+          </div>
+          <div className="w-full inline-flex justify-end mt-1.5">
+            <Link
+              className="text-sm text-blue-500 font-medium underline"
+              href={"/forget-password"}
+            >
+              Forget password?
+            </Link>
           </div>
           <div className="mt-3.5">
             <button

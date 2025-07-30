@@ -3,7 +3,6 @@ import {
   AlignRight,
   LogIn,
   LogOut,
-  MenuIcon,
   ShieldUser,
   ShoppingBasket,
   User,
@@ -14,6 +13,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/images/kk_logo.png";
+import { useUserStore } from "@/zustand/user.store";
+import LogoutBtn from "@/components/auth/logout-btn";
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +46,9 @@ export default function Menu() {
       name: "Contact",
     },
   ];
+
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   return (
     <div className="md:hidden p-1">
@@ -122,7 +126,7 @@ export default function Menu() {
                 </div>
 
                 {/* cart btn starts */}
-                <div >
+                <div>
                   <h1 className="text-2xl font-bold border-b border-b-gray-300 mb-2 mt-5">
                     Cart
                   </h1>
@@ -138,47 +142,49 @@ export default function Menu() {
                 {/* cart btn ends*/}
 
                 {/* user content starts */}
-                <div >
+                <div>
                   <h1 className="text-2xl font-bold border-b border-b-gray-300 mb-1 mt-4">
                     Profile
                   </h1>
-                  <div className="mt-2 mb-2">
-                    <div className="flex flex-col gap-y-4">
-                      <Link
-                        href={"/login"}
-                        className="bg-gray-900 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium"
-                      >
-                        <span className="inline-flex items-center justify-center w-full gap-4">
-                          <LogIn />
-                          Login
-                        </span>
-                      </Link>
-                      <Link
-                        className="py-1.5 grid place-items-center font-medium rounded-md text-center w-full bg-gray-200 border border-gray-300"
-                        href={"/profile"}
-                      >
-                        <span className="inline-flex items-center justify-center w-full gap-4">
-                          <ShieldUser />
-                          Admin
-                        </span>
-                      </Link>
-                      <Link
-                        className="py-1.5 grid place-items-center rounded-md font-medium text-center w-full bg-gray-200 border border-gray-300"
-                        href={"/dashboard"}
-                      >
-                        <span className="inline-flex items-center justify-center w-full gap-4">
-                          <User />
-                          Profile
-                        </span>
-                      </Link>
+                  <div className="mt-3 mb-2">
+                    <div className="flex flex-col gap-y-3">
+                      {!isAuthenticated && (
+                        <Link
+                          href={"/login"}
+                          className="bg-gray-900 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium"
+                        >
+                          <span className="inline-flex items-center justify-center w-full gap-4">
+                            <LogIn />
+                            Login
+                          </span>
+                        </Link>
+                      )}
+                      {isAuthenticated && (
+                        <>
+                          {user?.role.toLowerCase() === "admin" && (
+                            <Link
+                              className="py-1.5 grid place-items-center font-medium rounded-md text-center w-full bg-gray-200 border border-gray-300"
+                              href={"/admin"}
+                            >
+                              <span className="inline-flex items-center justify-center w-full gap-4">
+                                <ShieldUser />
+                                Admin
+                              </span>
+                            </Link>
+                          )}
+                          <Link
+                            className="py-1.5 grid place-items-center rounded-md font-medium text-center w-full bg-gray-200 border border-gray-300"
+                            href={"/profile/:id"}
+                          >
+                            <span className="inline-flex items-center justify-center w-full gap-4">
+                              <User />
+                              Profile
+                            </span>
+                          </Link>
+                          <LogoutBtn/>
+                        </>
+                      )}
                     </div>
-
-                    <button className="bg-gray-900 mt-3 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium">
-                      <span className="inline-flex items-center justify-center w-full gap-4">
-                        <LogOut />
-                        Logout
-                      </span>
-                    </button>
                   </div>
                 </div>
                 {/* user content ends */}

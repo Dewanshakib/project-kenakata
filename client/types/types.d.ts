@@ -11,3 +11,8 @@ export type IErrors = {
   email: string[];
   password: string[];
 };
+
+export type IResetPwdErrors = {
+  token:string;
+  password:string;
+}

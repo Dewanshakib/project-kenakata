@@ -29,7 +29,7 @@ export default function RegisterForm() {
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/register",
         {
           method: "POST",
-          credentials:'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -37,8 +37,15 @@ export default function RegisterForm() {
         }
       );
       const data = await res?.json();
+
       if (res.status === 400) {
-        setErrors(data.message);
+        setErrors(data.error);
+        return;
+      }
+
+      if (res.status === 401) {
+        toast.error(data.message);
+        setErrors(null)
         return;
       }
 
@@ -46,6 +53,7 @@ export default function RegisterForm() {
       setErrors(null);
       router.push("/login");
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -91,7 +99,10 @@ export default function RegisterForm() {
             />
             {errors?.username &&
               errors.username.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
                   • {error}
                 </p>
               ))}
@@ -111,8 +122,11 @@ export default function RegisterForm() {
             />
             {errors?.name &&
               errors.name.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
-                 • {error}
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
+                  • {error}
                 </p>
               ))}
           </div>
@@ -131,8 +145,11 @@ export default function RegisterForm() {
             />
             {errors?.email &&
               errors.email.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
-                 • {error}
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
+                  • {error}
                 </p>
               ))}
           </div>
@@ -158,7 +175,10 @@ export default function RegisterForm() {
             </button>
             {errors?.password &&
               errors.password.map((error) => (
-                <p key={error} className="font-semibold text-sm text-red-500 my-2">
+                <p
+                  key={error}
+                  className="font-semibold text-sm text-red-500 my-2"
+                >
                   • {error}
                 </p>
               ))}
