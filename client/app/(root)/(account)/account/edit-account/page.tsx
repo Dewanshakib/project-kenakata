@@ -1,7 +1,10 @@
+import EditAccountForm from '@/components/account/account-edit'
 import React from 'react'
 
 export default function EditAccount() {
   return (
-    <div>EditAccount</div>
+    <div className='grid place-items-center'>
+      <EditAccountForm/>
+    </div>
   )
 }

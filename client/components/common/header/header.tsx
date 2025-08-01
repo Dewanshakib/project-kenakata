@@ -87,7 +87,7 @@ export default function Header() {
                   </Link>
                 )}
                 <Link
-                  href={`/account/account`}
+                  href={`/account/dashboard`}
                   className="px-4 rounded-md font-medium cursor-pointer py-2 border border-gray-300 hover:duration-300 hover:opacity-90"
                 >
                   <span className="flex gap-2">

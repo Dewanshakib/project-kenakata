@@ -174,11 +174,11 @@ export default function Menu() {
                           )}
                           <Link
                             className="py-1.5 grid place-items-center rounded-md font-medium text-center w-full bg-gray-200 border border-gray-300"
-                            href={"/profile/:id"}
+                            href={"/account/dashboard"}
                           >
                             <span className="inline-flex items-center justify-center w-full gap-4">
                               <User />
-                              Profile
+                              Account
                             </span>
                           </Link>
                           <LogoutBtn/>

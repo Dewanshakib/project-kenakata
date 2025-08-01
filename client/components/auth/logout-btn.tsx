@@ -30,8 +30,8 @@ export default function LogoutBtn() {
 
   return (
     <form onSubmit={onSubmit}>
-      <button className="bg-gray-900 cursor-pointer hover:opacity-90 hover:duration-300 w-full text-white p-1.5 rounded-md font-medium">
-        <span className="inline-flex items-center justify-center w-full gap-4">
+      <button className="bg-red-500 cursor-pointer hover:bg-red-600 hover:duration-300 w-full text-white py-2 rounded-md font-semibold">
+        <span className="flex items-center justify-center w-full gap-4">
           <LogOut />
           Logout
         </span>
