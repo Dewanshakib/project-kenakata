@@ -1,5 +1,5 @@
 "use client";
-import { useFetchProfile } from "@/hooks/useFetchProfile";
+import { useFetchUser } from "@/hooks/useFetchProfile";
 import React from "react";
 
 export default function AuthProvider({
@@ -9,7 +9,7 @@ export default function AuthProvider({
 }) {
   
   // fetch profile
-  useFetchProfile()
+  useFetchUser()
  
   return <>{children}</>;
 }

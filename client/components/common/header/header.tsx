@@ -38,8 +38,6 @@ export default function Header() {
 
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const user = useUserStore((state) => state.user);
-  // console.log(isAuthenticated);
-  // console.log(user)
 
   return (
     isAuthenticated && (
@@ -89,12 +87,12 @@ export default function Header() {
                   </Link>
                 )}
                 <Link
-                  href={`/profile/${user?.id}`}
+                  href={`/account/account`}
                   className="px-4 rounded-md font-medium cursor-pointer py-2 border border-gray-300 hover:duration-300 hover:opacity-90"
                 >
                   <span className="flex gap-2">
                     <User />
-                    <p>Profile</p>
+                    <p>Account</p>
                   </span>
                 </Link>
                 <Link

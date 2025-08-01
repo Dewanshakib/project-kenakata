@@ -3,7 +3,7 @@
 import { useUserStore } from "@/zustand/user.store";
 import { useEffect } from "react";
 
-export const useFetchProfile = () => {
+export const useFetchUser = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
