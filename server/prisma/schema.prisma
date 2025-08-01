@@ -21,6 +21,7 @@ model User {
   role                Role      @default(User)
   avater              String?
   avater_id           String?
+  phone               String?
   resetPasswordToken  String?   @db.VarChar(64)
   resetPasswordExpiry DateTime?
   address             Address?
@@ -33,9 +34,9 @@ model User {
 model Address {
   id         String   @id @unique @default(cuid())
   first_name String   @db.VarChar(50)
-  last_name  String?   @db.VarChar(50)
+  last_name  String?  @db.VarChar(50)
   address_1  String   @db.VarChar(191)
-  address_2  String?   @db.VarChar(191)
+  address_2  String?  @db.VarChar(191)
   state      String
   city       String
   country    String
