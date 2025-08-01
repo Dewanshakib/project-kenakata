@@ -117,7 +117,8 @@ export const userSession = async (req: Request, res: Response) => {
   try {
     const id = req.id as string;
 
-    const user = await prisma.user.findFirst({ where: { id } });
+    const user = await prisma.user.findFirst({ where: { id }});
+    // console.log(user)
     if (!user) {
       return res.status(400).send({ message: "User not found with this id" });
     }
@@ -128,7 +129,7 @@ export const userSession = async (req: Request, res: Response) => {
       username: user.username,
       email: user.email,
       role: user.role,
-      avater: user.avater,
+      avater: user.avater
     };
 
     return res.status(200).send({ user: userInfo });
