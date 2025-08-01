@@ -75,8 +75,13 @@ export const login = async (req: Request, res: Response) => {
       where: { email: parsed.data.email },
     });
 
+
     if (!userExists) {
       return res.status(401).send({ message: "User not found" });
+    }
+
+    if (userExists?.username !== parsed.data.username) {
+      return res.status(401).send({ message: "Invalid username" })
     }
 
     const isMatched = await bcrypt.compare(
@@ -117,7 +122,7 @@ export const userSession = async (req: Request, res: Response) => {
   try {
     const id = req.id as string;
 
-    const user = await prisma.user.findFirst({ where: { id }});
+    const user = await prisma.user.findFirst({ where: { id } });
     // console.log(user)
     if (!user) {
       return res.status(400).send({ message: "User not found with this id" });
