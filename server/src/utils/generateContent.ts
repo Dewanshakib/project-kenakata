@@ -3,14 +3,14 @@ import path from "path";
 
 export const generateContent = (
   buffer: Buffer,
-  file: File
+  fileName: string,
 ): Base64URLString => {
   const parser = new DatauriParser();
 
-  if (!buffer || !file || !file.name) {
+  if (!buffer || !fileName) {
     throw new Error("File not found");
   }
 
-  const extName = path.extname(file.name);
+  const extName = path.extname(fileName);
   return parser.format(extName, buffer).content!;
 };

@@ -21,7 +21,7 @@ model User {
   role                Role      @default(User)
   avater              String?
   avater_id           String?
-  phone               String?   @db.VarChar(13)
+  phone               String?   @db.VarChar(13) // BD MOBILE NUMBER LENGTH
   resetPasswordToken  String?   @db.VarChar(64)
   resetPasswordExpiry DateTime?
   address             Address?

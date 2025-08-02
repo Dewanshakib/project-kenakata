@@ -1,10 +1,11 @@
 // controllers
 import { Request, Response } from "express";
 import {
-  FPSchema,
+  ForgetPasswordSchema,
   LoginSchema,
   RegisterSchema,
-  RPSchema,
+  ResetPasswordSchema,
+  
 } from "../libs/schema";
 import { prisma } from "../libs/prisma";
 import bcrypt from "bcryptjs";
@@ -126,7 +127,7 @@ export const userSession = async (req: Request, res: Response) => {
   try {
     const id = req.id as string;
 
-    const user = await prisma.user.findFirst({ where: { id } });
+    const user = await prisma.user.findUnique({ where: { id }});
     // console.log(user)
     if (!user) {
       return res.status(400).send({ message: "User not found with this id" });
@@ -139,6 +140,7 @@ export const userSession = async (req: Request, res: Response) => {
       email: user.email,
       role: user.role,
       avater: user.avater,
+      phone: user.phone,
     };
 
     return res.status(200).send({ user: userInfo });
@@ -170,7 +172,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
   try {
     const body = req.body;
 
-    const parsed = FPSchema.safeParse(body);
+    const parsed = ForgetPasswordSchema.safeParse(body);
     if (!parsed.success) {
       return res
         .status(400)
@@ -214,7 +216,7 @@ export const resetPassword = async (req: Request, res: Response) => {
   try {
     const body = req.body;
 
-    const parsed = RPSchema.safeParse(body);
+    const parsed = ResetPasswordSchema.safeParse(body);
     if (!parsed.success) {
       return res
         .status(400)
@@ -259,6 +261,8 @@ export const editAccount = async (req: Request, res: Response) => {
   const image = req.file;
   const body = req.body;
 
-  console.log(body);
-  console.log(image);
+  console.log("This is body ",body);
+  console.log("This is image ",image);
+
+  return res.send("ok")
 };

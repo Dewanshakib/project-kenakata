@@ -31,12 +31,12 @@ export const LoginSchema = z.object({
 });
 
 // forget password schema
-export const FPSchema = z.object({
+export const ForgetPasswordSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
 });
 
 // reset password schema
-export const RPSchema = z.object({
+export const ResetPasswordSchema = z.object({
   token: z.string().refine((token) => token.trim() !== "", {
     message: "Please enter your token",
   }),
