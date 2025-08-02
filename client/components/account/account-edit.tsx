@@ -66,9 +66,11 @@ export default function EditAccountForm() {
       if (!res.ok) {
         console.log(result.message);
         toast.error(result.message);
+        return;
       }
 
       toast.success(result.message);
+      router.push("/account/dashboard")
       router.refresh();
     } catch (error) {
       console.log(error);
@@ -76,9 +78,9 @@ export default function EditAccountForm() {
   };
 
   return (
-    <div className="p-2 mt-5 flex flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">
+    <div className="p-2 mt-5 flex md:gap-x-30 flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">
       {/* profile image section starts */}
-      <div className="">
+      <div className="w-full">
         <div className="flex items-center gap-4 mb-12">
           <UserPen size={32} />
           <h1 className="text-2xl font-bold"> Profile photo</h1>
@@ -90,7 +92,7 @@ export default function EditAccountForm() {
                 src={imgUrl}
                 alt="profile photo"
                 fill
-                className="object-contain"
+                className="object-cover"
               />
             </div>
           ) : (
@@ -117,7 +119,7 @@ export default function EditAccountForm() {
       {/* profile image section ends */}
 
       {/* profile info section starts */}
-      <div className="mt-10 md:mt-0">
+      <div className="mt-10 md:mt-0 w-full">
         <div className="flex items-center gap-4 mb-12">
           <FilePen size={32} />
           <h1 className="text-2xl font-bold"> Account information</h1>
@@ -192,7 +194,7 @@ export default function EditAccountForm() {
             disabled={isSubmitting}
             className={`${
               isSubmitting && "opacity-50"
-            } md:-ml-[100%] md:mt-10 bg-red-500 px-5 py-2 text-white rounded w-full md:w-fit cursor-pointer font-semibold`}
+            } md:-ml-[40%] md:mt-14 bg-red-500 px-5 py-2 text-white rounded w-full md:w-fit cursor-pointer font-semibold`}
           >
             {isSubmitting ? "Submitting..." : "Save Settings"}
           </button>

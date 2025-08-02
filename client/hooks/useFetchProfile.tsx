@@ -13,6 +13,7 @@ export const useFetchUser = () => {
         );
         const data = await res?.json();
         useUserStore.getState().setUser(data.user);
+        console.log(data)
       } catch (error) {
         console.log(error);
       }
