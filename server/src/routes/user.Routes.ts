@@ -2,6 +2,7 @@
 
 import { Router } from "express";
 import {
+  editAccount,
   forgetPassword,
   login,
   logout,
@@ -10,6 +11,7 @@ import {
   userSession,
 } from "../controllers/user.Controller";
 import { isValidated } from "../middlewares/auth";
+import { upload } from "../middlewares/multer";
 
 const router = Router();
 
@@ -26,9 +28,12 @@ router.get("/session", isValidated, userSession);
 router.get("/logout", logout);
 
 // forget password
-router.post("/forget-password", forgetPassword)
+router.post("/forget-password", forgetPassword);
 
 // reset password
-router.post("/reset-password", resetPassword)
+router.post("/reset-password", resetPassword);
+
+// edit user profile
+router.post("/edit-account", upload, isValidated, editAccount);
 
 export { router as userRoutes };

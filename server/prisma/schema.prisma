@@ -17,11 +17,11 @@ model User {
   name                String    @db.VarChar(191)
   username            String    @db.VarChar(191)
   email               String    @unique @db.VarChar(191)
-  password            String
+  password            String    @db.VarChar(60)
   role                Role      @default(User)
   avater              String?
   avater_id           String?
-  phone               String?
+  phone               String?   @db.VarChar(13)
   resetPasswordToken  String?   @db.VarChar(64)
   resetPasswordExpiry DateTime?
   address             Address?
