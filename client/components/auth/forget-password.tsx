@@ -1,22 +1,19 @@
 "use client";
 import Image from "next/image";
-import React, { FormEvent, useState } from "react";
+import React from "react";
 import logo from "@/assets/images/kk_logo.png";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { IForgetPwdErros } from "@/types/types";
+import { FPInput, FPSchema } from "@/lib/schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ForgetPasswordForm() {
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<IForgetPwdErros | null>(null);
-  const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+  const onSubmit = async (data: FPInput) => {
     try {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/forget-password",
@@ -25,30 +22,31 @@ export default function ForgetPasswordForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify(data),
         }
       );
 
-      const data = await res?.json();
-      if (res.status === 400) {
-        setErrors(data.error);
+      const result = await res?.json();
+      if (!res?.ok) {
+        console.log(result.message);
+        toast.error(result.message);
         return;
       }
 
-      if (res.status === 401) {
-        toast.error(data.message);
-        setErrors(null);
-        return;
-      }
-
-      toast.success(data.message);
+      toast.success(result.message);
       router.push("/reset-password");
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FPInput>({
+    resolver: zodResolver(FPSchema),
+  });
 
   return (
     <div className="max-w-xl w-full border border-gray-300 p-4 rounded-md">
@@ -69,35 +67,30 @@ export default function ForgetPasswordForm() {
       </div>
 
       <div className="">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2.5">
             <label htmlFor="Email" className="font-medium">
               Email address
             </label>
             <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
-              placeholder="dewan_op"
+              placeholder="dewan@gmail.com"
             />
-            {errors?.email &&
-              errors.email.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.email && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div>
             <button
               className={`${
-                loading && "opacity-50"
+                isSubmitting && "opacity-50"
               } bg-orange-400 text-gray-100 font-medium hover:bg-orange-500 w-full p-1.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-orange-500`}
             >
-              {loading ? "Submiting..." : "Submit"}
+              {isSubmitting ? "Submiting..." : "Submit"}
             </button>
           </div>
         </form>

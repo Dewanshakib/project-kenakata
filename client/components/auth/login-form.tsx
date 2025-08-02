@@ -1,29 +1,29 @@
 "use client";
 import Image from "next/image";
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import logo from "@/assets/images/kk_logo.png";
-import { IUserInput, IErrors } from "@/types/types";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useUserStore } from "@/zustand/user.store";
+import { LoginInput, LoginSchema } from "@/lib/schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState<IUserInput>({
-    username: "",
-    email: "",
-    password: "",
-  });
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<IErrors | null>(null);
-
   const [isOpen, setIsOpen] = useState(false);
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
+  });
+
+  const onSubmit = async (data: LoginInput) => {
     try {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/login",
@@ -33,31 +33,22 @@ export default function LoginForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(data),
         }
       );
-      const data = await res?.json();
+      const result = await res?.json();
 
-      if (res.status === 400) {
-        setErrors(data.error);
+      if (!res?.ok) {
+        console.log(result.message);
+        toast.error(result.message);
         return;
       }
 
-      if (res.status === 401) {
-        toast.error(data.message);
-        setErrors(null)
-        return;
-      }
-
-      toast.success(data.message);
+      toast.success(result.message);
       useUserStore.getState().setIsAuthenticated(true);
-      setErrors(null);
       router.push("/");
-      // router.refresh();
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,66 +74,54 @@ export default function LoginForm() {
 
       {/* content starts*/}
       <div className="mt-10">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <label htmlFor="Username" className="font-medium">
               Username
             </label>
             <input
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
+              {...register("username")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
               placeholder="dewan_op"
             />
-            {errors?.username &&
-              errors.username.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.username && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.username.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Email" className="font-medium">
               Email address
             </label>
             <input
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              {...register("email")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="email"
               placeholder="dewan@gmail.com"
             />
-            {errors?.email &&
-              errors.email.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.email && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="relative">
             <label htmlFor="Password" className="font-medium">
               Password
             </label>
             <input
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              {...register("password")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type={isOpen ? "text" : "password"}
               placeholder="************"
             />
+            {errors.password && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.password.message}
+              </span>
+            )}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
@@ -150,15 +129,6 @@ export default function LoginForm() {
             >
               {isOpen ? <EyeIcon /> : <EyeOffIcon />}
             </button>
-            {errors?.password &&
-              errors.password.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
           </div>
           <div className="w-full inline-flex justify-end mt-1.5">
             <Link
@@ -171,10 +141,10 @@ export default function LoginForm() {
           <div className="mt-3.5">
             <button
               className={`${
-                loading && "opacity-50"
+                isSubmitting && "opacity-50"
               } bg-orange-400 text-gray-100 font-medium hover:bg-orange-500 w-full p-1.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-orange-500`}
             >
-              {loading ? "Submiting..." : "Submit"}
+              {isSubmitting ? "Submiting..." : "Submit"}
             </button>
           </div>
         </form>

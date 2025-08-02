@@ -2,13 +2,15 @@
 import { useUserStore } from "@/zustand/user.store";
 import { FilePen, UserPen } from "lucide-react";
 import Image from "next/image";
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
 
 export default function EditAccountForm() {
   const user = useUserStore((state) => state.user);
   const imgRef = useRef<HTMLInputElement | null>(null);
   const [imgUrl, setImgUrl] = useState<string | undefined>(user?.avater);
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
+  const [loading,setLoading] = useState(false)
+  const [formData,setFormData] = useState({})
 
   const handleImageInput = (e: ChangeEvent<HTMLInputElement>) => {
     const photoFile = e.target.files?.[0];
@@ -22,7 +24,21 @@ export default function EditAccountForm() {
     }
   };
 
-  console.log(imgFile)
+  // console.log(imgFile)
+
+  const onSumbit = (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const payload = new FormData()
+      // payload.set("")
+
+    } catch (error) {
+      console.log(error)
+    } finally{
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="p-2 mt-5 flex flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">

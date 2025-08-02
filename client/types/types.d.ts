@@ -30,3 +30,10 @@ export type IProfile = {
   role: string;
   address?: string[];
 }
+
+export type IEditAccount = {
+  name:string;
+  username:string;
+  email:string;
+  phone:string;
+}

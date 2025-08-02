@@ -1,29 +1,29 @@
 "use client";
 import Image from "next/image";
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import logo from "@/assets/images/kk_logo.png";
 import { useRouter } from "next/navigation";
-import { IErrors, IUserInput } from "@/types/types";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { RegisterInput, RegisterSchema } from "@/lib/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterForm() {
-  const [formData, setFormData] = useState<IUserInput>({
-    username: "",
-    name: "",
-    email: "",
-    password: "",
-  });
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<IErrors | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(RegisterSchema),
+  });
+
+  const onSubmit = async (data: RegisterInput) => {
     try {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/register",
@@ -33,29 +33,21 @@ export default function RegisterForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(data),
         }
       );
-      const data = await res?.json();
 
-      if (res.status === 400) {
-        setErrors(data.error);
+      const result = await res?.json();
+      if (!res.ok) {
+        console.log("error");
+        toast.error(result.message);
         return;
       }
 
-      if (res.status === 401) {
-        toast.error(data.message);
-        setErrors(null)
-        return;
-      }
-
-      toast.success(data.message);
-      setErrors(null);
+      toast.success(result.message);
       router.push("/login");
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,89 +75,70 @@ export default function RegisterForm() {
 
       {/* content starts*/}
       <div className="mt-10">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <label htmlFor="Name" className="font-medium">
               Name
             </label>
             <input
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              {...register("name")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
               placeholder="Dewan Shakib"
             />
-            {errors?.username &&
-              errors.username.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.name && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.name.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Username" className="font-medium">
               Username
             </label>
             <input
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
+              {...register("username")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
               placeholder="dewan_op"
             />
-            {errors?.name &&
-              errors.name.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.username && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.username.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Email" className="font-medium">
               Email address
             </label>
             <input
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              {...register("email")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
-              type="email"
+              // type="email"
               placeholder="dewan@gmail.com"
             />
-            {errors?.email &&
-              errors.email.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
+            {errors.email && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="relative">
             <label htmlFor="Password" className="font-medium">
               Password
             </label>
             <input
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              {...register("password")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type={isOpen ? "text" : "password"}
               placeholder="************"
             />
+            {errors.password && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.password.message}
+              </span>
+            )}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
@@ -173,25 +146,14 @@ export default function RegisterForm() {
             >
               {isOpen ? <EyeIcon /> : <EyeOffIcon />}
             </button>
-            {errors?.password &&
-              errors.password.map((error) => (
-                <p
-                  key={error}
-                  className="font-semibold text-sm text-red-500 my-2"
-                >
-                  • {error}
-                </p>
-              ))}
           </div>
           <div className="mt-3.5">
             <button
-              type="submit"
-              disabled={loading}
               className={`${
-                loading && "opacity-50"
+                isSubmitting && "opacity-50"
               } bg-orange-400 text-gray-100 font-medium hover:bg-orange-500 w-full p-1.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-orange-500`}
             >
-              {loading ? "Submiting..." : "Submit"}
+              {isSubmitting ? "Submiting..." : "Submit"}
             </button>
           </div>
         </form>
