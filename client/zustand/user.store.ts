@@ -8,6 +8,7 @@ type IUser = {
   email: string;
   role: string;
   avater: string;
+  phone:string;
 };
 
 type IUserStore = {

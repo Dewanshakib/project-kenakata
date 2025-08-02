@@ -7,8 +7,8 @@ import logo from "@/assets/images/kk_logo.png";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { RPInput, RPSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ResetPasswordInput, ResetPasswordSchema } from "@/lib/schema";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -17,11 +17,11 @@ export default function ResetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RPInput>({
-    resolver: zodResolver(RPSchema),
+  } = useForm<ResetPasswordInput>({
+    resolver: zodResolver(ResetPasswordSchema),
   });
 
-  const onSubmit = async (data: RPInput) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     try {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/reset-password",

@@ -1,16 +1,21 @@
 "use client";
+import { EditAccountInput, EditAccountSchema } from "@/lib/schema";
 import { useUserStore } from "@/zustand/user.store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FilePen, UserPen } from "lucide-react";
 import Image from "next/image";
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { ChangeEvent, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function EditAccountForm() {
   const user = useUserStore((state) => state.user);
   const imgRef = useRef<HTMLInputElement | null>(null);
   const [imgUrl, setImgUrl] = useState<string | undefined>(user?.avater);
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
-  const [loading,setLoading] = useState(false)
-  const [formData,setFormData] = useState({})
+
+  const router = useRouter();
 
   const handleImageInput = (e: ChangeEvent<HTMLInputElement>) => {
     const photoFile = e.target.files?.[0];
@@ -20,25 +25,55 @@ export default function EditAccountForm() {
         URL.revokeObjectURL(imgUrl);
       }
       setImgUrl(url);
-      setImgFile(photoFile)
+      setImgFile(photoFile);
     }
   };
 
-  // console.log(imgFile)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<EditAccountInput>({
+    resolver: zodResolver(EditAccountSchema),
+    defaultValues: {
+      name: user?.name || "",
+      username: user?.username || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    },
+  });
 
-  const onSumbit = (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
+  const onSumbit = async (data: EditAccountInput) => {
     try {
-      const payload = new FormData()
-      // payload.set("")
+      const formData = new FormData();
+      if (imgFile) formData.set("file", imgFile);
 
+      formData.set("name", data.name);
+      formData.set("username", data.username);
+      formData.set("email", data.email);
+      if (data.phone !== undefined) formData.set("phone", data.phone);
+
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/edit-account",
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
+
+      const result = await res?.json();
+      if (!res.ok) {
+        console.log(result.message);
+        toast.error(result.message);
+      }
+
+      toast.success(result.message);
+      router.refresh();
     } catch (error) {
-      console.log(error)
-    } finally{
-      setLoading(false)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className="p-2 mt-5 flex flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">
@@ -49,8 +84,6 @@ export default function EditAccountForm() {
           <h1 className="text-2xl font-bold"> Profile photo</h1>
         </div>
         <div className="flex flex-col md:flex-row gap-6 items-center">
-          
-          
           {imgUrl ? (
             <div className="w-40 h-40 relative border border-gray-300 rounded-full overflow-hidden">
               <Image
@@ -89,59 +122,79 @@ export default function EditAccountForm() {
           <FilePen size={32} />
           <h1 className="text-2xl font-bold"> Account information</h1>
         </div>
-        <form>
+        <form onSubmit={handleSubmit(onSumbit)}>
           <div className="mb-3">
             <label htmlFor="Name" className="font-semibold">
               Name
             </label>
             <input
+              {...register("name")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
               placeholder="dewan_op"
-              required
-              defaultValue={user?.name}
             />
+            {errors.name && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.name.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Username" className="font-semibold">
               Username
             </label>
             <input
+              {...register("username")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
-              required
               placeholder="dewan_op"
-              defaultValue={user?.username}
             />
+            {errors.username && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.username.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Email" className="font-semibold">
               Email
             </label>
             <input
+              {...register("email")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="text"
-              required
               placeholder="dewan_op"
-              defaultValue={user?.email}
             />
+            {errors.email && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="Phone" className="font-semibold">
-              Phone (optional)
+              Phone (Required for cash on delivery)
             </label>
             <input
+              {...register("phone")}
               className="w-full block mt-1 border-2 text-sm border-gray-300 p-1.5 pl-2.5 rounded-md focus:outline-2 focus:outline-offset-2 focus:outline-gray-400"
               type="number"
-              placeholder="8801*********"
-              defaultValue={user?.email}
+              placeholder="017********"
             />
+            {errors.phone && (
+              <span className="text-red-500 mt-1 font-medium text-sm">
+                {errors.phone.message}
+              </span>
+            )}
           </div>
           <button
             type="submit"
-            className="md:-ml-[100%] md:mt-10 bg-red-500 px-5 py-2 text-white rounded w-full md:w-fit cursor-pointer font-semibold"
+            disabled={isSubmitting}
+            className={`${
+              isSubmitting && "opacity-50"
+            } md:-ml-[100%] md:mt-10 bg-red-500 px-5 py-2 text-white rounded w-full md:w-fit cursor-pointer font-semibold`}
           >
-            Save Settings
+            {isSubmitting ? "Submitting..." : "Save Settings"}
           </button>
         </form>
       </div>

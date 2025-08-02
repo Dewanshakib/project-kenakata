@@ -36,14 +36,14 @@ export const LoginSchema = z.object({
 export type LoginInput = z.infer<typeof LoginSchema>;
 
 // forget password
-export const FPSchema = z.object({
+export const ForgetPasswordSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
 });
 
-export type FPInput = z.infer<typeof FPSchema>;
+export type ForgetPasswordInput = z.infer<typeof ForgetPasswordSchema>;
 
 // reset password
-export const RPSchema = z.object({
+export const ResetPasswordSchema = z.object({
   token: z.string().refine((token) => token.trim() !== "", {
     message: "Please enter your token",
   }),
@@ -53,4 +53,31 @@ export const RPSchema = z.object({
     .max(60, { message: "Password must be under 60 Characters" }),
 });
 
-export type RPInput = z.infer<typeof RPSchema>;
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
+
+// edit-account schema
+export const EditAccountSchema = z.object({
+  name: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  username: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  email: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  phone: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || (/^01\d{9}$/.test(val) && val.length === 11),
+      {
+        message: "Phone number must be 11 digits and start with '01'",
+      }
+    ),
+});
+
+export type EditAccountInput = z.infer<typeof EditAccountSchema>;

@@ -6,14 +6,14 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { FPInput, FPSchema } from "@/lib/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ForgetPasswordInput, ForgetPasswordSchema } from "@/lib/schema";
 
 export default function ForgetPasswordForm() {
   const router = useRouter();
 
-  const onSubmit = async (data: FPInput) => {
+  const onSubmit = async (data: ForgetPasswordInput) => {
     try {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/forget-password",
@@ -44,8 +44,8 @@ export default function ForgetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FPInput>({
-    resolver: zodResolver(FPSchema),
+  } = useForm<ForgetPasswordInput>({
+    resolver: zodResolver(ForgetPasswordSchema),
   });
 
   return (
