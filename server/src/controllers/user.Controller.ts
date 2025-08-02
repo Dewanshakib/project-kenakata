@@ -1,17 +1,19 @@
 // controllers
 import { Request, Response } from "express";
 import {
+  EditAccountSchema,
   ForgetPasswordSchema,
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
-  
 } from "../libs/schema";
 import { prisma } from "../libs/prisma";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
 import crypto from "crypto";
 import { sendEmail } from "../services/mail";
+import { generateContent } from "../utils/generateContent";
+import cloudinary from "../libs/cloudinary";
 
 declare global {
   namespace Express {
@@ -127,7 +129,7 @@ export const userSession = async (req: Request, res: Response) => {
   try {
     const id = req.id as string;
 
-    const user = await prisma.user.findUnique({ where: { id }});
+    const user = await prisma.user.findUnique({ where: { id } });
     // console.log(user)
     if (!user) {
       return res.status(400).send({ message: "User not found with this id" });
@@ -258,11 +260,83 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 // edit user account
 export const editAccount = async (req: Request, res: Response) => {
-  const image = req.file;
-  const body = req.body;
+  try {
+    // check authentication
+    const id = req.id;
+    if (!id) {
+      return res.status(401).send({ message: "Not authorized" });
+    }
 
-  console.log("This is body ",body);
-  console.log("This is image ",image);
+    // check user
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
 
-  return res.send("ok")
+    // image file
+    const imageFile = req.file;
+
+    const body = req.body;
+    // console.log("Body ------------------>",body)
+
+    // zod validation server
+    const { data, error, success } = EditAccountSchema.safeParse(body);
+    if (!success) {
+      return res.status(404).send({ message: error.flatten().fieldErrors });
+    }
+
+    // if any file exists or not
+    if (imageFile) {
+      // generate image content
+      const imageContent = generateContent(
+        imageFile?.buffer,
+        imageFile?.originalname
+      );
+
+      // console.log(imageContent);
+
+      const cloud = await cloudinary.uploader.upload(imageContent);
+      // console.log(cloud);
+
+      if (cloud.public_id !== user.avater_id) {
+        if (user.avater_id) {
+          await cloudinary.uploader.destroy(user.avater_id);
+        }
+      }
+
+      if (cloud) {
+        // console.log("Parsed Data ------------------->",data)
+        await prisma.user.update({
+          where: {
+            id,
+          },
+          data: {
+            avater: cloud.secure_url,
+            avater_id: cloud.public_id,
+          },
+        });
+      } else {
+        return res
+          .status(404)
+          .send({ message: "Error occured while uploading" });
+      }
+    }
+
+    await prisma.user.update({
+      where: { id },
+      data: {
+        name: data.name || user.name,
+        username: data.username || user.username,
+        email: data.email || user.email,
+        phone: data.phone || user.phone,
+      },
+    });
+
+    return res.status(201).send({ message: "Profile settings saved" });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).send({ message: error.message });
+    }
+    return res.status(500).send({ message: "Server error" });
+  }
 };

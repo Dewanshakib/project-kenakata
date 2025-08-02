@@ -45,3 +45,28 @@ export const ResetPasswordSchema = z.object({
     .min(6, { message: "Password must be at least 6 Characters" })
     .max(60, { message: "Password must be under 60 Characters" }),
 });
+
+// edit account schema
+export const EditAccountSchema = z.object({
+  name: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  username: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  email: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  phone: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || (/^01\d{9}$/.test(val) && val.length === 11),
+      {
+        message: "Phone number must be 11 digits and start with '01'",
+      }
+    ),
+});
