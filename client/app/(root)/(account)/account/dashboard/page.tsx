@@ -17,8 +17,8 @@ export default function Account() {
       logo: <UserRoundPen />,
     },
     {
-      src: "/account/addresses",
-      name: "addresses",
+      src: "/account/address",
+      name: "Address",
       logo: <MapPinHouse />,
     },
   ];

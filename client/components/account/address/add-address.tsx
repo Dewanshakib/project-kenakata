@@ -5,12 +5,24 @@ import { MapPinPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function AddAddressForm() {
   const router = useRouter();
 
   const onSubmit = async (data: AddAccountAddressInput) => {
     try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/account/add-address"
+      );
+
+      const data = await res?.json();
+      if (!res?.ok) {
+        console.log(data.message);
+        return;
+      }
+      toast.success(data.message);
+      router.push("/account/address");
     } catch (error) {
       console.log(error);
     }
@@ -121,7 +133,7 @@ export default function AddAddressForm() {
               isSubmitting && "opacity-70"
             } bg-orange-500 p-2 w-full text-white font-medium rounded-md hover:bg-orange-700 duration-300`}
           >
-            {isSubmitting ? "Adding..." : "Add to address"}
+            {isSubmitting ? "Adding..." : "Add address"}
           </button>
         </form>
       </div>

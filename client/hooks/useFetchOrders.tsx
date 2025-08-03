@@ -9,7 +9,7 @@ export const useFetchOrders = () => {
     async function getOrders() {
       try {
         const res = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/orders/all",
+          process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/orders/all",
           {
             method: "GET",
             credentials: "include",
