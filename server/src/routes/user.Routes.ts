@@ -4,7 +4,7 @@ import { Router } from "express";
 
 import { isValidated } from "../middlewares/auth";
 import { upload } from "../middlewares/multer";
-import { editAccount, forgetPassword, login, logout, register, resetPassword, userSession } from "../controllers/user.controller";
+import { editAccount,  forgetPassword, login, logout, register, resetPassword, userSession } from "../controllers/user.controller";
 
 const router = Router();
 

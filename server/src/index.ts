@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import { userRoutes } from "./routes/user.routes";
 import { orderRoutes } from "./routes/order.routes";
+import { addressRoutes } from "./routes/address.routes";
 
 
 // app & port
@@ -20,7 +21,8 @@ app.use(cors({ credentials: true,origin:process.env.FRONTEND_SERVER! }));
 
 // apis
 app.use("/api/users",userRoutes)
-app.use("/api/orders",orderRoutes)
+app.use("/api/users/orders",orderRoutes)
+app.use("/api/users/address",addressRoutes)
 
 // server
 app.listen(PORT, () =>

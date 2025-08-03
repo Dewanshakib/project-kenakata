@@ -70,3 +70,23 @@ export const EditAccountSchema = z.object({
       }
     ),
 });
+
+// add address schema
+export const AddAccountAddressSchema = z.object({
+  name: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  address: z
+    .string()
+    .refine((address) => address.trim() !== "", { message: "Please enter your address" }),
+  state: z
+    .string()
+    .refine((address) => address.trim() !== "", { message: "Please enter your state" }),
+  country: z
+    .string()
+    .refine((address) => address.trim() !== "", { message: "Please enter your country" }),
+  city: z
+    .string()
+    .refine((address) => address.trim() !== "", { message: "Please enter your city" })
+});
