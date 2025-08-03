@@ -124,33 +124,30 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// session
+// session with redis
 export const userSession = async (req: Request, res: Response) => {
   try {
     const id = req.id as string;
 
-    const user = await prisma.user.findUnique({ where: { id } });
-    // console.log(user)
-    if (!user) {
-      return res.status(400).send({ message: "User not found with this id" });
-    }
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        role: true,
+        avater: true,
+        phone: true,
+      },
+    });
 
-    const userInfo = {
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      avater: user.avater,
-      phone: user.phone,
-    };
+    if (!user) return res.status(404).send({ message: "User not found" });
 
-    return res.status(200).send({ user: userInfo });
-  } catch (error) {
-    if (error instanceof Error) {
-      return res.status(500).send({ message: error.message });
-    }
-    return res.status(500).send({ message: "Server error" });
+    return res.status(200).send({ userInfo: user });
+  } catch (err) {
+    console.error("Error:", err);
+    return res.status(500).send({ message: "Something broke" });
   }
 };
 
@@ -331,6 +328,7 @@ export const editAccount = async (req: Request, res: Response) => {
         phone: data.phone || user.phone,
       },
     });
+
 
     return res.status(201).send({ message: "Profile settings saved" });
   } catch (error) {
