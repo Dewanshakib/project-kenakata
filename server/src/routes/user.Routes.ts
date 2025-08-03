@@ -1,17 +1,10 @@
-// routes
+// user routes
 
 import { Router } from "express";
-import {
-  editAccount,
-  forgetPassword,
-  login,
-  logout,
-  register,
-  resetPassword,
-  userSession,
-} from "../controllers/user.Controller";
+
 import { isValidated } from "../middlewares/auth";
 import { upload } from "../middlewares/multer";
+import { editAccount, forgetPassword, login, logout, register, resetPassword, userSession } from "../controllers/user.controller";
 
 const router = Router();
 

@@ -1,8 +1,10 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { userRoutes } from "./routes/user.Routes";
 import "dotenv/config";
+import { userRoutes } from "./routes/user.routes";
+import { orderRoutes } from "./routes/order.routes";
+
 
 // app & port
 const app: Application = express();
@@ -15,6 +17,7 @@ app.use(cors({ credentials: true,origin:process.env.FRONTEND_SERVER! }));
 
 // apis
 app.use("/api/users",userRoutes)
+app.use("/api/orders",orderRoutes)
 
 // server
 app.listen(PORT, () =>
