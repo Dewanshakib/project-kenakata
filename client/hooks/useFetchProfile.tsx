@@ -15,7 +15,7 @@ export const useFetchUser = () => {
           { method: "GET", credentials: "include" }
         );
         const data = await res?.json();
-        useUserStore.getState().setUser(data.user);
+        useUserStore.getState().setUser(data.userInfo);
         // console.log(data)
       } catch (error) {
         console.log(error);
