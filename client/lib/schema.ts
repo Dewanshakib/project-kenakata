@@ -72,12 +72,22 @@ export const EditAccountSchema = z.object({
   phone: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || (/^01\d{9}$/.test(val) && val.length === 11),
-      {
-        message: "Phone number must be 11 digits and start with '01'",
-      }
-    ),
+    .refine((val) => !val || (/^01\d{9}$/.test(val) && val.length === 11), {
+      message: "Phone number must be 11 digits and start with '01'",
+    }),
 });
 
 export type EditAccountInput = z.infer<typeof EditAccountSchema>;
+
+// add account address schema
+export const AddAccountAddressSchema = z.object({
+  username: z
+    .string()
+    .min(5, { message: "Name must be at least 5 Characters" })
+    .max(50, { message: "Name must be under 50 Characters" }),
+  address: z
+    .string()
+    .refine((address) => address.trim() !== "", { message: "Please enter your address" }),
+  state:z.string()
+  
+});

@@ -7,9 +7,12 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // const [loading,setLoading] = useState(false)
   
   // fetch profile
-  useFetchUser()
+  const {loading} = useFetchUser()
+
+  if(loading) return <div>Loading...</div>
  
   return <>{children}</>;
 }

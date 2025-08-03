@@ -22,7 +22,7 @@ export default function LogoutBtn() {
       toast.success(data.message);
       useUserStore.getState().setLogout();
       router.push("/login");
-      router.refresh()
+      // router.refresh()
     } catch (error) {
       console.log(error);
     }

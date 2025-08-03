@@ -29,6 +29,8 @@ export default function EditAccountForm() {
     }
   };
 
+  
+
   const {
     register,
     handleSubmit,
@@ -76,6 +78,8 @@ export default function EditAccountForm() {
       console.log(error);
     }
   };
+
+ 
 
   return (
     <div className="p-2 mt-5 flex md:gap-x-30 flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">

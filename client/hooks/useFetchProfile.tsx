@@ -1,9 +1,12 @@
 "use client";
 
 import { useUserStore } from "@/zustand/user.store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const useFetchUser = () => {
+  const [loading, setLoading] = useState(false);
+  const setUser = useUserStore((state) => state.setUser);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -13,12 +16,16 @@ export const useFetchUser = () => {
         );
         const data = await res?.json();
         useUserStore.getState().setUser(data.user);
-        console.log(data)
+        // console.log(data)
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [setUser]);
+
+  return { loading };
 };
