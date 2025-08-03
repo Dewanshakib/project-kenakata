@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function AddAddress() {
   return (
-    <div>
+    <div className='w-full grid h-[85vh] place-items-center'>
         <AddAddressForm/>
     </div>
   )

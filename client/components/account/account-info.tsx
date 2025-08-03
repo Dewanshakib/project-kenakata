@@ -10,7 +10,9 @@ import Image from "next/image";
 export default function AccountInfo() {
   const user: IProfile | null = useUserStore((state) => state.user);
 
-  useFetchUser();
+  const {loading} = useFetchUser();
+
+  if(loading) return <h1 className="text-2xl font-medium text-center">Loading...</h1>
 
   return (
     <div className="w-full mt-5 p-2">
@@ -37,16 +39,11 @@ export default function AccountInfo() {
             <br />
             <h1 className="text-2xl font-bold mb-3">{user?.name}</h1>
           </div>
-
-          {/* <button className="bg-red-500 text-white font-semibold px-4 py-2 rounded hover:opacity-85 hover:duration-300 cursor-pointer">
-            Logout
-          </button> */}
           <LogoutBtn />
         </div>
       </div>
 
       {/* header ends */}
-
       <hr className="text-gray-300" />
     </div>
   );

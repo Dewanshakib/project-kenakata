@@ -7,7 +7,4 @@ export type IProfile = {
   email: string;
   avater?: string;
   role: string;
-  address?: string[];
 }
-
-
