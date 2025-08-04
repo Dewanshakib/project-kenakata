@@ -6,7 +6,7 @@ import { addUserAddress, editUserAddress, getUserAddress } from "../controllers/
 const router = Router()
 
 // get user address
-router.get("/",isValidated,getUserAddress)
+router.get("", isValidated, getUserAddress)
 
 // add address
 router.post("/add-address", isValidated, addUserAddress)

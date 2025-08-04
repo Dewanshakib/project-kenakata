@@ -27,6 +27,6 @@ router.post("/forget-password", forgetPassword);
 router.post("/reset-password", resetPassword);
 
 // edit user profile
-router.post("/edit-account", upload, isValidated, editAccount);
+router.put("/edit-account", upload, isValidated, editAccount);
 
 export { router as userRoutes };
