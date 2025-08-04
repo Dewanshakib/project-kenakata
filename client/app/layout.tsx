@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/components/auth/auth-provider";
 import { Toaster } from "react-hot-toast";
 import Header from "@/components/common/header/header";
 
@@ -24,17 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.className} antialiased`}>
-        <AuthProvider>
-          <>
-            <Header />
-          </>
+        <>
+          <Header />
+        </>
 
-          <main className="max-w-7xl mx-auto px-6 lg:px-10 mt-4">
-            {children}
-            <Toaster />
-          </main>
-          <footer></footer>
-        </AuthProvider>
+        <main className="max-w-7xl mx-auto px-6 lg:px-10 mt-4">
+          {children}
+          <Toaster />
+        </main>
+        <footer></footer>
       </body>
     </html>
   );

@@ -34,7 +34,7 @@ export default function EditAddressForm({ address }: { address: IAddress }) {
         return;
       }
       toast.success(result.message);
-      router.push("/account/dasboard");
+      router.push("/account/dashboard");
     } catch (error) {
       console.log(error);
     }

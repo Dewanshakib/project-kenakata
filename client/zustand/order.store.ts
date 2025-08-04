@@ -16,7 +16,8 @@ type IOrder = {
 
 type IOrderStore = {
     order: IOrder[] | null;
-    setOrder: (order: IOrder[]) => void
+    setOrder: (order: IOrder[]) => void;
+    clearOrder: () => void
 }
 
 export const useOrderStore = create<IOrderStore>()(
@@ -24,6 +25,7 @@ export const useOrderStore = create<IOrderStore>()(
         (set) => ({
             order: null,
             setOrder: (order: IOrder[]) => set({ order: order }),
+            clearOrder: (() => set({ order: null }))
         }),
         {
             name: "order_store"

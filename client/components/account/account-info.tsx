@@ -19,6 +19,7 @@ export default function AccountInfo() {
       </div>
     );
 
+    
   return (
     <div className="w-full mt-5 p-2">
       {/* header starts */}
