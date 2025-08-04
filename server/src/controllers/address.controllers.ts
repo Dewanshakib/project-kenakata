@@ -63,7 +63,7 @@ export const editUserAddress = async (req: Request, res: Response) => {
       }
     })
 
-    return res.status(204).send({message:"Address saved successfully"})
+    return res.status(200).send({message:"Address saved successfully"})
   } catch (error) {
     return res.status(500).send({ message: error instanceof Error ? error.message : "Server error" })
   }
