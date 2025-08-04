@@ -13,12 +13,12 @@ export default function Account() {
     },
     {
       src: "/account/edit-account",
-      name: "Edit Account",
+      name: "Edit account",
       logo: <UserRoundPen />,
     },
     {
       src: "/account/address",
-      name: "Address",
+      name: "Add/edit address",
       logo: <MapPinHouse />,
     },
   ];

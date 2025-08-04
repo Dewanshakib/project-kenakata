@@ -1,10 +1,8 @@
-"use client";
-
 import { useUserStore } from "@/zustand/user.store";
 import { useEffect, useState } from "react";
 
 export const useFetchUser = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {

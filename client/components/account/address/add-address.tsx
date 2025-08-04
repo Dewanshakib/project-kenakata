@@ -1,7 +1,8 @@
 "use client";
 import { AddAccountAddressInput, AddAccountAddressSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPinPlus } from "lucide-react";
+import { ChevronLeftIcon, MapPinPlus } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -13,15 +14,23 @@ export default function AddAddressForm() {
   const onSubmit = async (data: AddAccountAddressInput) => {
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/account/add-address"
+        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/address/add-address",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
       );
 
-      const data = await res?.json();
+      const result = await res?.json();
       if (!res?.ok) {
-        console.log(data.message);
+        console.log(result.message);
         return;
       }
-      toast.success(data.message);
+      toast.success(result.message);
       router.push("/account/address");
     } catch (error) {
       console.log(error);
@@ -37,7 +46,16 @@ export default function AddAddressForm() {
   });
 
   return (
-    <div className="max-w-2xl mx-auto w-full border pt-8 pb-5  px-5 border-slate-200 rounded-xl">
+    <div className="max-w-2xl mx-auto w-full border p-4 border-slate-200 rounded-xl">
+      <div className="mb-6">
+        <Link
+          href={"/account/address"}
+          className="flex gap-2 items-center p-2 bg-slate-100 hover:bg-slate-300 duration-300 w-fit rounded"
+        >
+          <ChevronLeftIcon />
+        </Link>
+      </div>
+
       <div className="mb-10">
         <h1 className="text-2xl font-bold flex items-center gap-3">
           <MapPinPlus size={32} /> Add address information

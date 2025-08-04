@@ -1,18 +1,23 @@
 "use client";
 
 import { useFetchUser } from "@/hooks/useFetchProfile";
-import { IProfile } from "@/types/types";
 import { useUserStore } from "@/zustand/user.store";
 import React from "react";
 import LogoutBtn from "../auth/logout-btn";
 import Image from "next/image";
+import ProfileLoading from "../common/loader/profile-loading";
 
 export default function AccountInfo() {
-  const user: IProfile | null = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
 
-  const {loading} = useFetchUser();
+  const { loading } = useFetchUser();
 
-  if(loading) return <h1 className="text-2xl font-medium text-center">Loading...</h1>
+  if (loading)
+    return (
+      <div className="mb-5 mt-3 ml-2">
+        <ProfileLoading/>
+      </div>
+    );
 
   return (
     <div className="w-full mt-5 p-2">

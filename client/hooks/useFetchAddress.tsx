@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
-
+import { useAddressStore } from "@/zustand/address.store";
+import { useEffect, useState } from "react";
 
 export const useFetchAddress = () => {
-    const [loading,setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const setAddress = useAddressStore((state) => state.setAddress);
 
-
-    useEffect(() => {
-        async function getUserAddress() {
-            try {
+  useEffect(() => {
+    async function getUserAddress() {
+      try {
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/address",
           {
@@ -20,14 +20,16 @@ export const useFetchAddress = () => {
         if (!res.ok) {
           throw new Error(data.message);
         }
-        // setOrder(data.orders)
+        setAddress(data.address);
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
-        }
+    }
 
-        getUserAddress()
-    },[])
-}
+    getUserAddress();
+  }, [setAddress]);
+
+  return { loading };
+};

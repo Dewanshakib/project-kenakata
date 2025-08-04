@@ -1,4 +1,5 @@
 "use client";
+import { useFetchUser } from "@/hooks/useFetchProfile";
 import { EditAccountInput, EditAccountSchema } from "@/lib/schema";
 import { useUserStore } from "@/zustand/user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,9 +9,11 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Loading from "../common/loader/loading";
 
 export default function EditAccountForm() {
   const user = useUserStore((state) => state.user);
+
   const imgRef = useRef<HTMLInputElement | null>(null);
   const [imgUrl, setImgUrl] = useState<string | undefined>(user?.avater);
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
@@ -28,8 +31,6 @@ export default function EditAccountForm() {
       setImgFile(photoFile);
     }
   };
-
-  
 
   const {
     register,
@@ -58,7 +59,7 @@ export default function EditAccountForm() {
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/edit-account",
         {
-          method: "POST",
+          method: "PUT",
           credentials: "include",
           body: formData,
         }
@@ -72,14 +73,21 @@ export default function EditAccountForm() {
       }
 
       toast.success(result.message);
-      router.push("/account/dashboard")
+      router.push("/account/dashboard");
       router.refresh();
     } catch (error) {
       console.log(error);
     }
   };
 
- 
+  const { loading } = useFetchUser();
+
+  if (loading)
+    return (
+      <div className="w-full grid place-items-center mt-30">
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="p-2 mt-5 flex md:gap-x-30 flex-col md:flex-row max-w-5xl mx-auto w-full justify-between">
