@@ -6,6 +6,7 @@ import logo from "@/assets/images/kk_logo.png";
 import Menu from "./menu";
 import { ShieldUser, ShoppingBasket, User } from "lucide-react";
 import { useUserStore } from "@/zustand/user.store";
+import SearchBar from "../search/search-bar";
 
 export default function Header() {
   // navlinks
@@ -43,8 +44,8 @@ export default function Header() {
     isAuthenticated && (
       <div className="sticky top-0 w-full z-50 px-6 lg:px-8 2xl:px-14 backdrop-blur-sm bg-white/10 border-b border-b-gray-300">
         <div className="flex justify-between items-center py-2 2xl:py-4 ">
-          {/* logo starts */}
-          <div className="">
+          {/* logo & search icon starts */}
+          <div className="flex flex-1 gap-6 items-center">
             <Link href={"/"}>
               <section className="relative w-15 h-15">
                 <Image
@@ -56,8 +57,10 @@ export default function Header() {
                 />
               </section>
             </Link>
+
+            <SearchBar />
           </div>
-          {/* logo ends */}
+          {/* logo & search icon ends */}
 
           {/* navlinks & auth section starts -> Desktop*/}
           <div className="hidden md:flex items-center gap-2">
