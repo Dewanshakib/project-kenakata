@@ -16,7 +16,7 @@ type IUserStore = {
   setLogout: () => void;
   isAuthenticated: boolean;
   setIsAuthenticated: (type: boolean) => void;
-  setUser: (user: IUser) => void;
+  setUser: (user: IUser | null) => void;
 };
 
 export const useUserStore = create<IUserStore>()(
@@ -25,7 +25,7 @@ export const useUserStore = create<IUserStore>()(
       user: null,
       isAuthenticated: false,
       setIsAuthenticated: (type: boolean) => set({ isAuthenticated: type }),
-      setUser: (user: IUser) => set({ user: user }),
+      setUser: (user: IUser | null) => set({ user: user || null }),
       setLogout: () => set({ user: null, isAuthenticated: false }),
     }),
     {

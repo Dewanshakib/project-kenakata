@@ -11,14 +11,11 @@ import { LoginInput, LoginSchema } from "@/lib/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useFetchSession } from "@/hooks/useFetchSession";
 
 export default function LoginForm() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const queryClient = useQueryClient()
-
-  const {data} = useFetchSession()
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -52,11 +49,13 @@ export default function LoginForm() {
       toast.success(result.message);
       router.push("/");
 
-      queryClient.invalidateQueries({queryKey:["userSession"]})
-      
+      queryClient.invalidateQueries({ queryKey: ["userSession"] });
+
+      // setUser(session.data.userInfo);
+      // router.refresh()
     } catch (error) {
       console.log(error);
-    } 
+    }
   };
 
   return (

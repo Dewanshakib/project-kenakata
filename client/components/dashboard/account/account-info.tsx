@@ -17,16 +17,16 @@ export default function AccountInfo() {
     return <h1>{error.message}</h1>;
   }
 
-  console.log(data)
+  // console.log(data)
 
   return (
     <div className="w-full mt-5 p-2">
       {/* header starts */}
       <div className="flex items-center flex-row md:gap-x-8 gap-x-4 mb-5 w-full">
-        {data && data.avater ? (
+        {data && data?.avater ? (
           <div className="w-40 h-40 relative border border-gray-300 rounded-full overflow-hidden">
             <Image
-              src={data.avater}
+              src={data?.avater}
               alt="profile photo"
               fill
               className="object-cover"
@@ -34,7 +34,7 @@ export default function AccountInfo() {
           </div>
         ) : (
           <div className="bg-gray-200 w-40 h-40 rounded-full grid place-items-center">
-            <p className="text-5xl font-bold">{data.name.charAt(0)}</p>
+            <p className="text-5xl font-bold">{data?.name?.charAt(0)}</p>
           </div>
         )}
 
@@ -42,7 +42,7 @@ export default function AccountInfo() {
           <div>
             <span className="text-xl font-medium italic">Hello,</span>
             <br />
-            <h1 className="text-2xl font-bold mb-3">{data.name}</h1>
+            <h1 className="text-2xl font-bold mb-3">{data?.name}</h1>
           </div>
           <LogoutBtn />
         </div>
