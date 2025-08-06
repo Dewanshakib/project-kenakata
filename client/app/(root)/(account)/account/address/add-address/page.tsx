@@ -1,4 +1,4 @@
-import AddAddressForm from '@/components/account/address/add-address'
+import AddAddressForm from '@/components/dashboard/address/add-address'
 import React from 'react'
 
 export default function AddAddress() {

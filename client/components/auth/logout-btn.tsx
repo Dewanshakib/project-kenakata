@@ -1,7 +1,5 @@
 "use client";
-import { useAddressStore } from "@/zustand/address.store";
-import { useOrderStore } from "@/zustand/order.store";
-import { useUserStore } from "@/zustand/user.store";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent } from "react";
@@ -9,6 +7,7 @@ import toast from "react-hot-toast";
 
 export default function LogoutBtn() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,10 +24,8 @@ export default function LogoutBtn() {
       }
 
       toast.success(data.message);
-      useUserStore.getState().setLogout();
-      useAddressStore.getState().clearAddress();
-      useOrderStore.getState().clearOrder();
       router.push("/login");
+      queryClient.invalidateQueries({ queryKey: ["userSession"] });
     } catch (error) {
       console.log(error);
     }

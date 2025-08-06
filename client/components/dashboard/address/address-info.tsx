@@ -1,35 +1,36 @@
 "use client";
-import { useFetchAddress } from "@/hooks/useFetchAddress";
-import { useAddressStore } from "@/zustand/address.store";
 import { MapPinned } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import Loading from "@/components/common/loader/loading";
 import EditAddressForm from "./edit-address-form";
+import { useFetchAddress } from "@/hooks/useFetchAddress";
 
 export default function AddressInfo() {
-  const address = useAddressStore((state) => state.address);
+  const { isLoading, error, data } = useFetchAddress();
 
-  const { loading } = useFetchAddress();
-
-  if (loading)
+  if (isLoading)
     return (
       <div className="w-full grid place-items-center mt-30">
         <Loading />
       </div>
     );
 
+  if (error) {
+    return <h1>{error.message}</h1>;
+  }
+
   return (
     <div className=" max-w-2xl mx-auto w-full border p-4 border-slate-300 rounded">
       <div className="">
         <h1 className="text-2xl font-bold flex items-center gap-3">
           <MapPinned size={32} />
-          {address ? "Edit address information" : "Address information"}
+          {data.address ? "Edit address information" : "Address information"}
         </h1>
       </div>
 
-      {address ? (
-        <EditAddressForm address={address} />
+      {data.address ? (
+        <EditAddressForm address={data.address} />
       ) : (
         <div className="mt-10">
           <p className="mb-2 text-xl font-semibold text-slate-700">

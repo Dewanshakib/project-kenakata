@@ -1,4 +1,4 @@
-import EditAccountForm from '@/components/account/account-edit'
+import EditAccountForm from '@/components/dashboard/account/account-edit'
 import DashboardBackBtn from '@/components/common/buttons/dashboard-btn'
 import React from 'react'
 

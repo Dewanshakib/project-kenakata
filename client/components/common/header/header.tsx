@@ -7,8 +7,12 @@ import Menu from "./menu";
 import { ShieldUser, ShoppingBasket, User } from "lucide-react";
 import { useUserStore } from "@/zustand/user.store";
 import SearchBar from "../search/search-bar";
+import { useFetchSession } from "@/hooks/useFetchSession";
 
 export default function Header() {
+
+  const {data} = useFetchSession()
+
   // navlinks
   const navlinks = [
     {
@@ -37,11 +41,8 @@ export default function Header() {
     },
   ];
 
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  const user = useUserStore((state) => state.user);
-
   return (
-    isAuthenticated && (
+    data && (
       <div className="sticky top-0 w-full z-50 px-6 lg:px-8 2xl:px-14 backdrop-blur-sm bg-white/10 border-b border-b-gray-300">
         <div className="flex justify-between items-center py-2 2xl:py-4 ">
           {/* logo & search icon starts */}
@@ -76,9 +77,9 @@ export default function Header() {
               ))}
             </div>
             {/* auth section starts */}
-            {isAuthenticated && (
+            {data && (
               <div className="ml-5 flex items-center gap-2 relative">
-                {user?.role.toLowerCase() === "admin" && (
+                {data?.role.toLowerCase() === "admin" && (
                   <Link
                     href={"/admin"}
                     className="px-4 rounded-md font-medium cursor-pointer py-2 bg-gray-700 text-white hover:duration-300 hover:opacity-90"

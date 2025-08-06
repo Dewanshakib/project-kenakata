@@ -1,4 +1,4 @@
-import AccountInfo from "@/components/account/account-info";
+import AccountInfo from "@/components/dashboard/account/account-info";
 import { MapPinHouse, PanelTop, UserRoundPen } from "lucide-react";
 import Link from "next/link";
 import React from "react";

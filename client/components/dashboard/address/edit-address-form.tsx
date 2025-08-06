@@ -5,6 +5,7 @@ import {
 } from "@/lib/schema";
 import { IAddress} from "@/zustand/address.store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -12,6 +13,7 @@ import toast from "react-hot-toast";
 
 export default function EditAddressForm({ address }: { address: IAddress }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const onSubmit = async (data: EditAccountAddressInput) => {
     try {
@@ -35,6 +37,8 @@ export default function EditAddressForm({ address }: { address: IAddress }) {
       }
       toast.success(result.message);
       router.push("/account/dashboard");
+
+      queryClient.invalidateQueries({queryKey:["userAddress"]})
     } catch (error) {
       console.log(error);
     }

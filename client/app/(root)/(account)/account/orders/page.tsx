@@ -1,4 +1,4 @@
-import AllOrders from '@/components/account/orders/all-orders'
+import AllOrders from '@/components/dashboard/orders/all-orders'
 import DashboardBackBtn from '@/components/common/buttons/dashboard-btn'
 import React from 'react'
 

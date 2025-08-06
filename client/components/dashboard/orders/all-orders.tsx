@@ -1,27 +1,26 @@
 "use client";
-import { useFetchOrders } from "@/hooks/useFetchOrders";
-import { useOrderStore } from "@/zustand/order.store";
 import React from "react";
 import OrderCard from "./order-card";
 import Loading from "@/components/common/loader/loading";
+import { useFetchOrders } from "@/hooks/useFetchOrders";
 
 export default function AllOrders() {
-  const orders = useOrderStore((state) => state.order);
-  const { loading } = useFetchOrders();
+  
+  const {isLoading,data,error} = useFetchOrders()
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="w-full grid place-items-center mt-30">
         <Loading />
       </div>
     );
 
-  // console.log(typeof(orders))
+  console.log((data))
 
   return (
     <div>
       <div className="">
-        {orders && orders.length > 0 ? <OrderCard /> : "No orders yet"}
+        {data && data.length > 0 ? <OrderCard /> : "No orders yet"}
       </div>
     </div>
   );

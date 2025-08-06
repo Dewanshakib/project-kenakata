@@ -1,27 +1,27 @@
 "use client";
+
 import { useQuery } from "@tanstack/react-query";
 
-export const useFetchOrders = () => {
-  
-  const fetchOrderFunc = async () => {
+export const useFetchSession = () => {
+  const fetchSessionFunc = async () => {
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/orders",
+        process.env.NEXT_PUBLIC_BACKEND_URL! + "/api/users/session",
         {
           method: "GET",
           credentials: "include",
         }
       );
       const data = await res?.json();
-      return data.orders;
+      return data.userInfo;
     } catch (error) {
       console.log(error);
     }
   };
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["userOrders"],
-    queryFn: fetchOrderFunc,
+    queryKey: ["userSession"],
+    queryFn: fetchSessionFunc,
   });
 
   return { isLoading, error, data };
